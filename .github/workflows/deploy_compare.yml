@@ -1,45 +1,45 @@
-name: Unified Deploy to Docker and Non-Docker
+# name: Unified Deploy to Docker and Non-Docker
 
-on:
-  push:
-    branches:
-      - main
+# on:
+#   push:
+#     branches:
+#       - main
 
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+# jobs:
+#   deploy:
+#     runs-on: ubuntu-latest
+#     steps:
+#     - name: Checkout code
+#       uses: actions/checkout@v2
 
-    - name: Setup SSH Keys
-      uses: webfactory/ssh-agent@v0.9.0
-      with:
-        ssh-private-key: ${{ secrets.SSH_KEY }}
+#     - name: Setup SSH Keys
+#       uses: webfactory/ssh-agent@v0.9.0
+#       with:
+#         ssh-private-key: ${{ secrets.SSH_KEY }}
 
-    - name: Deploy to Docker
-      run: |
-        start_time=$(date +%s)
-        ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.DOCKER_HOST }} "
-        cd /home/ubuntu/docker-vs-nondocker
-        git pull
-        sudo docker-compose down
-        sudo docker-compose up -d --build
-        "
-        end_time=$(date +%s)
-        echo "Docker Deployment took $((end_time - start_time)) seconds"
+#     - name: Deploy to Docker
+#       run: |
+#         start_time=$(date +%s)
+#         ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.DOCKER_HOST }} "
+#         cd /home/ubuntu/docker-vs-nondocker
+#         git pull
+#         sudo docker-compose down
+#         sudo docker-compose up -d --build
+#         "
+#         end_time=$(date +%s)
+#         echo "Docker Deployment took $((end_time - start_time)) seconds"
 
-    - name: Deploy to Non-Docker
-      run: |
-        start_time=$(date +%s)
-        ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.NON_DOCKER_HOST }} "
-        cd /home/ubuntu/docker-vs-nondocker
-        git pull
-        source env/bin/activate
-        pip install -r requirements.txt
-        python manage.py migrate
-        python manage.py collectstatic --no-input
-        sudo systemctl restart myapp
-        "
-        end_time=$(date +%s)
-        echo "Non-Docker Deployment took $((end_time - start_time)) seconds"
+#     - name: Deploy to Non-Docker
+#       run: |
+#         start_time=$(date +%s)
+#         ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.NON_DOCKER_HOST }} "
+#         cd /home/ubuntu/docker-vs-nondocker
+#         git pull
+#         source env/bin/activate
+#         pip install -r requirements.txt
+#         python manage.py migrate
+#         python manage.py collectstatic --no-input
+#         sudo systemctl restart myapp
+#         "
+#         end_time=$(date +%s)
+#         echo "Non-Docker Deployment took $((end_time - start_time)) seconds"
