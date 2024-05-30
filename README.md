@@ -25,6 +25,8 @@ WantedBy=multi-user.target
 ```
 
 ```
-
+Docker
+1. apt update, apt install docker docker-compose
+2. git clone
 
 ```
